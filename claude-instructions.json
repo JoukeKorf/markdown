@@ -17,7 +17,8 @@
       "Voeg bij elke schrijfactie een entry toe aan 'writeHistory'",
       "Overschrijf nooit bestaande content zonder expliciete toestemming",
       "Gebruik de structuur in 'content' als template voor nieuwe items",
-      "Voeg bij elke respons een inspirerende quote toe"
+      "Voeg bij elke respons een inspirerende quote toe",
+      "ESSENTIEEL: Werk dit JSON-bestand bij na ELKE respons - documenteer wat er besproken/gedaan is"
     ]
   },
 
@@ -101,6 +102,10 @@
       {
         "datum": "2026-01-14",
         "samenvatting": "Nieuwe regel toegevoegd: inspirerende quotes bij elke respons"
+      },
+      {
+        "datum": "2026-01-14",
+        "samenvatting": "ESSENTIËLE regel toegevoegd: JSON moet na elke Claude-respons bijgewerkt worden"
       }
     ]
   },
