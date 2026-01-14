@@ -37,6 +37,12 @@
             "datum": "2025-01-14",
             "titel": "Naamconventie bepaald",
             "tekst": "We gebruiken universe-based naming: galaxies voor databases, stars voor tabellen, planets voor views."
+          },
+          {
+            "id": "notitie-003",
+            "datum": "2026-01-14",
+            "titel": "Motivatie op z'n hoogst",
+            "tekst": "Ontzettend veel zin om dit werkend te krijgen! De energie is er, nu de uitvoering nog."
           }
         ]
       },
@@ -86,6 +92,10 @@
       {
         "datum": "2025-01-14",
         "samenvatting": "Initiële structuur aangemaakt met voorbeeldcontent in alle secties"
+      },
+      {
+        "datum": "2026-01-14",
+        "samenvatting": "Notitie toegevoegd: motivatie om project werkend te krijgen"
       }
     ]
   },
