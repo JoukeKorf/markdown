@@ -16,7 +16,8 @@
       "Houd antwoorden kort als 'responseLength' op 'beknopt' staat",
       "Voeg bij elke schrijfactie een entry toe aan 'writeHistory'",
       "Overschrijf nooit bestaande content zonder expliciete toestemming",
-      "Gebruik de structuur in 'content' als template voor nieuwe items"
+      "Gebruik de structuur in 'content' als template voor nieuwe items",
+      "Voeg bij elke respons een inspirerende quote toe"
     ]
   },
 
@@ -96,6 +97,10 @@
       {
         "datum": "2026-01-14",
         "samenvatting": "Notitie toegevoegd: motivatie om project werkend te krijgen"
+      },
+      {
+        "datum": "2026-01-14",
+        "samenvatting": "Nieuwe regel toegevoegd: inspirerende quotes bij elke respons"
       }
     ]
   },
