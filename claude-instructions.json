@@ -1,0 +1,100 @@
+{
+  "meta": {
+    "version": "1.0",
+    "created": "2025-01-14",
+    "description": "Instructiebestand voor Claude Code - lees dit bestand aan het begin van een sessie"
+  },
+
+  "writeInstructions": {
+    "_comment": "CLAUDE: Lees deze sectie eerst. Dit bepaalt hoe je naar dit bestand schrijft.",
+    "language": "nl",
+    "style": "informeel",
+    "responseLength": "beknopt",
+    "rules": [
+      "Schrijf altijd in de taal specified in 'language'",
+      "Pas je toon aan op basis van 'style' (formeel/informeel)",
+      "Houd antwoorden kort als 'responseLength' op 'beknopt' staat",
+      "Voeg bij elke schrijfactie een entry toe aan 'writeHistory'",
+      "Overschrijf nooit bestaande content zonder expliciete toestemming",
+      "Gebruik de structuur in 'content' als template voor nieuwe items"
+    ]
+  },
+
+  "content": {
+    "_comment": "Hier staat de daadwerkelijke inhoud. Claude mag hier naar schrijven.",
+    "sections": {
+      "projectNotities": {
+        "active": true,
+        "items": [
+          {
+            "id": "notitie-001",
+            "datum": "2025-01-14",
+            "titel": "Projectstructuur opgezet",
+            "tekst": "De basisstructuur voor de data pipeline is gedefinieerd. Volgende stap: Delta tables configureren."
+          },
+          {
+            "id": "notitie-002",
+            "datum": "2025-01-14",
+            "titel": "Naamconventie bepaald",
+            "tekst": "We gebruiken universe-based naming: galaxies voor databases, stars voor tabellen, planets voor views."
+          }
+        ]
+      },
+      "beslissingen": {
+        "active": true,
+        "items": [
+          {
+            "id": "beslissing-001",
+            "datum": "2025-01-14",
+            "titel": "PBIR format gekozen",
+            "tekst": "We migreren van PBIX naar PBIR voor betere version control en samenwerking.",
+            "status": "definitief"
+          }
+        ]
+      },
+      "ideeen": {
+        "active": true,
+        "items": [
+          {
+            "id": "idee-001",
+            "datum": "2025-01-14",
+            "titel": "Interactieve documentatie",
+            "tekst": "Een HTML-viewer bouwen die JSON-bestanden rendert met zoekfunctie en filters.",
+            "prioriteit": "medium"
+          },
+          {
+            "id": "idee-002",
+            "datum": "2025-01-14",
+            "titel": "Automatische changelog",
+            "tekst": "Claude laat bij elke aanpassing automatisch een samenvatting achter in writeHistory.",
+            "prioriteit": "hoog"
+          }
+        ]
+      },
+      "codeDocumentatie": {
+        "active": false,
+        "items": []
+      }
+    }
+  },
+
+  "writeHistory": {
+    "_comment": "CLAUDE: Voeg hier een entry toe bij elke schrijfactie naar dit bestand.",
+    "maxItems": 50,
+    "showTimestamps": true,
+    "entries": [
+      {
+        "datum": "2025-01-14",
+        "samenvatting": "Initiële structuur aangemaakt met voorbeeldcontent in alle secties"
+      }
+    ]
+  },
+
+  "renderConfig": {
+    "_comment": "Instellingen voor de HTML-viewer",
+    "theme": "light",
+    "expandedByDefault": true,
+    "showInactiveSections": false,
+    "dateFormat": "DD-MM-YYYY"
+  }
+}

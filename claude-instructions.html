@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Instructions Viewer</title>
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f5;
+            --bg-tertiary: #e8e8e8;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --border: #e0e0e0;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-tertiary: #0f3460;
+            --text-primary: #eaeaea;
+            --text-secondary: #a0a0a0;
+            --accent: #818cf8;
+            --accent-hover: #a5b4fc;
+            --border: #2d3748;
+            --success: #34d399;
+            --warning: #fbbf24;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 2rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+
+        .meta-info {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .panel {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .panel h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .setting-item {
+            background: var(--bg-primary);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .setting-item label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .setting-item select,
+        .setting-item input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+
+        .setting-item select:focus,
+        .setting-item input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .toggle {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            background: var(--bg-tertiary);
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle.active {
+            background: var(--accent);
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle.active::after {
+            transform: translateX(22px);
+        }
+
+        .section-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .section-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .section-name {
+            font-weight: 500;
+        }
+
+        .section-count {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            background: var(--bg-tertiary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            margin-left: 0.5rem;
+        }
+
+        .content-section {
+            margin-bottom: 1rem;
+        }
+
+        .content-section h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .content-item {
+            background: var(--bg-primary);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            border-left: 3px solid var(--accent);
+        }
+
+        .content-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .content-item-title {
+            font-weight: 600;
+        }
+
+        .content-item-date {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .content-item-text {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .badge-definitief { background: var(--success); color: white; }
+        .badge-hoog { background: var(--warning); color: #1a1a1a; }
+        .badge-medium { background: var(--bg-tertiary); color: var(--text-primary); }
+
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            display: flex;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: var(--bg-primary);
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .history-date {
+            font-size: 0.75rem;
+            color: var(--accent);
+            white-space: nowrap;
+            font-weight: 500;
+        }
+
+        .history-text {
+            font-size: 0.875rem;
+        }
+
+        .rules-list {
+            list-style: none;
+        }
+
+        .rules-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            font-size: 0.875rem;
+        }
+
+        .rules-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        .json-output {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .button {
+            padding: 0.5rem 1rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .button:hover {
+            background: var(--accent-hover);
+        }
+
+        .button-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .inactive {
+            opacity: 0.5;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            header { flex-direction: column; gap: 1rem; }
+            .settings-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>📋 Claude Instructions</h1>
+                <p class="meta-info" id="meta-info"></p>
+            </div>
+            <div class="button-group">
+                <button class="button button-secondary" onclick="toggleTheme()">🌓 Thema</button>
+                <button class="button" onclick="downloadJSON()">⬇️ Download JSON</button>
+            </div>
+        </header>
+
+        <!-- Instellingen Panel -->
+        <div class="panel">
+            <div class="panel-header">
+                <h2>⚙️ Schrijfinstructies</h2>
+            </div>
+            <div class="settings-grid">
+                <div class="setting-item">
+                    <label>Taal</label>
+                    <select id="setting-language" onchange="updateSetting('language', this.value)">
+                        <option value="nl">Nederlands</option>
+                        <option value="en">English</option>
+                        <option value="de">Deutsch</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <label>Schrijfstijl</label>
+                    <select id="setting-style" onchange="updateSetting('style', this.value)">
+                        <option value="informeel">Informeel</option>
+                        <option value="formeel">Formeel</option>
+                        <option value="technisch">Technisch</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <label>Antwoordlengte</label>
+                    <select id="setting-length" onchange="updateSetting('responseLength', this.value)">
+                        <option value="beknopt">Beknopt</option>
+                        <option value="normaal">Normaal</option>
+                        <option value="uitgebreid">Uitgebreid</option>
+                    </select>
+                </div>
+            </div>
+            <div style="margin-top: 1rem;">
+                <h3 style="font-size: 0.875rem; margin-bottom: 0.75rem; color: var(--text-secondary);">Regels voor Claude:</h3>
+                <ul class="rules-list" id="rules-list"></ul>
+            </div>
+        </div>
+
+        <!-- Actieve Secties Panel -->
+        <div class="panel">
+            <div class="panel-header">
+                <h2>📁 Actieve Secties</h2>
+            </div>
+            <div class="section-list" id="section-toggles"></div>
+        </div>
+
+        <!-- Content Panel -->
+        <div class="panel">
+            <div class="panel-header">
+                <h2>📝 Inhoud</h2>
+            </div>
+            <div id="content-display"></div>
+        </div>
+
+        <!-- History Panel -->
+        <div class="panel">
+            <div class="panel-header">
+                <h2>📜 Schrijfgeschiedenis</h2>
+                <span class="meta-info" id="history-meta"></span>
+            </div>
+            <div class="history-list" id="history-list"></div>
+        </div>
+
+        <!-- JSON Output Panel -->
+        <div class="panel">
+            <div class="panel-header">
+                <h2>🔧 JSON Output</h2>
+                <button class="button button-secondary" onclick="copyJSON()">📋 Kopieer</button>
+            </div>
+            <pre class="json-output" id="json-output"></pre>
+        </div>
+    </div>
+
+    <script>
+        let data = null;
+
+        // Laad JSON bij opstarten
+        async function loadJSON() {
+            try {
+                const response = await fetch('claude-instructions.json');
+                data = await response.json();
+                renderAll();
+            } catch (error) {
+                console.error('Kon JSON niet laden:', error);
+                document.body.innerHTML = `
+                    <div class="container">
+                        <div class="panel" style="text-align: center; padding: 3rem;">
+                            <h2>⚠️ JSON niet gevonden</h2>
+                            <p style="margin-top: 1rem; color: var(--text-secondary);">
+                                Zorg dat <code>claude-instructions.json</code> in dezelfde map staat als dit HTML-bestand.
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function renderAll() {
+            renderMeta();
+            renderSettings();
+            renderSectionToggles();
+            renderContent();
+            renderHistory();
+            renderJSON();
+            applyTheme();
+        }
+
+        function renderMeta() {
+            document.getElementById('meta-info').textContent = 
+                `Versie ${data.meta.version} • Aangemaakt: ${data.meta.created}`;
+        }
+
+        function renderSettings() {
+            document.getElementById('setting-language').value = data.writeInstructions.language;
+            document.getElementById('setting-style').value = data.writeInstructions.style;
+            document.getElementById('setting-length').value = data.writeInstructions.responseLength;
+
+            const rulesList = document.getElementById('rules-list');
+            rulesList.innerHTML = data.writeInstructions.rules
+                .map(rule => `<li>${rule}</li>`)
+                .join('');
+        }
+
+        function renderSectionToggles() {
+            const container = document.getElementById('section-toggles');
+            const sections = data.content.sections;
+            
+            container.innerHTML = Object.entries(sections).map(([key, section]) => `
+                <div class="section-toggle">
+                    <div>
+                        <span class="section-name">${formatSectionName(key)}</span>
+                        <span class="section-count">${section.items.length} items</span>
+                    </div>
+                    <div class="toggle ${section.active ? 'active' : ''}" 
+                         onclick="toggleSection('${key}')"></div>
+                </div>
+            `).join('');
+        }
+
+        function renderContent() {
+            const container = document.getElementById('content-display');
+            const sections = data.content.sections;
+            const showInactive = data.renderConfig.showInactiveSections;
+
+            container.innerHTML = Object.entries(sections)
+                .filter(([_, section]) => showInactive || section.active)
+                .map(([key, section]) => `
+                    <div class="content-section ${section.active ? '' : 'inactive'}">
+                        <h3>${formatSectionName(key)} ${section.active ? '' : '(inactief)'}</h3>
+                        ${section.items.length === 0 
+                            ? '<p style="color: var(--text-secondary); font-size: 0.875rem;">Geen items</p>'
+                            : section.items.map(item => renderContentItem(item)).join('')
+                        }
+                    </div>
+                `).join('');
+        }
+
+        function renderContentItem(item) {
+            let badge = '';
+            if (item.status) {
+                badge = `<span class="badge badge-${item.status}">${item.status}</span>`;
+            } else if (item.prioriteit) {
+                badge = `<span class="badge badge-${item.prioriteit}">${item.prioriteit}</span>`;
+            }
+
+            return `
+                <div class="content-item">
+                    <div class="content-item-header">
+                        <span class="content-item-title">${item.titel}${badge}</span>
+                        <span class="content-item-date">${item.datum}</span>
+                    </div>
+                    <p class="content-item-text">${item.tekst}</p>
+                </div>
+            `;
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('history-list');
+            const history = data.writeHistory;
+
+            document.getElementById('history-meta').textContent = 
+                `Max ${history.maxItems} items • Timestamps: ${history.showTimestamps ? 'aan' : 'uit'}`;
+
+            container.innerHTML = history.entries
+                .slice()
+                .reverse()
+                .map(entry => `
+                    <div class="history-item">
+                        ${history.showTimestamps ? `<span class="history-date">${entry.datum}</span>` : ''}
+                        <span class="history-text">${entry.samenvatting}</span>
+                    </div>
+                `).join('');
+        }
+
+        function renderJSON() {
+            document.getElementById('json-output').textContent = JSON.stringify(data, null, 2);
+        }
+
+        function updateSetting(key, value) {
+            data.writeInstructions[key] = value;
+            addHistoryEntry(`Instelling '${key}' gewijzigd naar '${value}'`);
+            renderAll();
+        }
+
+        function toggleSection(sectionKey) {
+            const section = data.content.sections[sectionKey];
+            section.active = !section.active;
+            addHistoryEntry(`Sectie '${formatSectionName(sectionKey)}' ${section.active ? 'geactiveerd' : 'gedeactiveerd'}`);
+            renderAll();
+        }
+
+        function addHistoryEntry(samenvatting) {
+            const today = new Date().toISOString().split('T')[0];
+            data.writeHistory.entries.push({
+                datum: today,
+                samenvatting: samenvatting
+            });
+
+            // Trim history als nodig
+            if (data.writeHistory.entries.length > data.writeHistory.maxItems) {
+                data.writeHistory.entries = data.writeHistory.entries.slice(-data.writeHistory.maxItems);
+            }
+        }
+
+        function formatSectionName(key) {
+            return key
+                .replace(/([A-Z])/g, ' $1')
+                .replace(/^./, str => str.toUpperCase())
+                .trim();
+        }
+
+        function toggleTheme() {
+            data.renderConfig.theme = data.renderConfig.theme === 'light' ? 'dark' : 'light';
+            applyTheme();
+            renderJSON();
+        }
+
+        function applyTheme() {
+            document.documentElement.setAttribute('data-theme', data.renderConfig.theme);
+        }
+
+        function downloadJSON() {
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'claude-instructions.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function copyJSON() {
+            navigator.clipboard.writeText(JSON.stringify(data, null, 2));
+            alert('JSON gekopieerd naar klembord!');
+        }
+
+        // Start
+        loadJSON();
+    </script>
+</body>
+</html>
